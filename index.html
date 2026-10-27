@@ -420,17 +420,17 @@
         <p class="subtitle">Poné a prueba lo que sabés sobre la Subsecretaría</p>
 
         <div class="levels-map" aria-label="Niveles del juego">
-          <div class="lv lvl-1"><div class="n">Nivel 1</div><div class="a">Diagnóstico y Prevención</div><div class="p">100 pts</div></div>
-          <div class="lv lvl-2"><div class="n">Nivel 2</div><div class="a">Análisis Delictual</div><div class="p">150 pts</div></div>
-          <div class="lv lvl-3"><div class="n">Nivel 3</div><div class="a">Agentes de Prevención</div><div class="p">200 pts</div></div>
-          <div class="lv lvl-4"><div class="n">Nivel 4</div><div class="a">Registro Único de Bicicletas</div><div class="p">250 pts</div></div>
+          <div class="lv lvl-1"><div class="n">Nivel 1</div><div class="a">Diagnóstico y Prevención</div><div class="p">3 preguntas · 100 pts</div></div>
+          <div class="lv lvl-2"><div class="n">Nivel 2</div><div class="a">Análisis Delictual</div><div class="p">2 preguntas · 150 pts</div></div>
+          <div class="lv lvl-3"><div class="n">Nivel 3</div><div class="a">Agentes de Prevención</div><div class="p">3 preguntas · 200 pts</div></div>
+          <div class="lv lvl-4"><div class="n">Nivel 4</div><div class="a">Registro Único de Bicicletas</div><div class="p">2 preguntas · 250 pts</div></div>
         </div>
 
         <label class="field-label" for="playerName">Tu nombre</label>
         <input type="text" id="playerName" placeholder="Escribí tu nombre" maxlength="24" autocomplete="off">
 
         <div class="rules">
-          <b>Cómo se juega:</b> 18 preguntas en 4 niveles (100, 150, 200 y 250 puntos). Tenés <b>30 segundos</b> por pregunta (<b>40</b> en el nivel 2). Si pedís una pista, la respuesta correcta vale la mitad de puntos. ¡Las respuestas se mezclan en cada partida!
+          <b>Cómo se juega:</b> 10 preguntas en 4 niveles (100, 150, 200 y 250 puntos). Tenés <b>30 segundos</b> por pregunta (<b>40</b> en el nivel 2). Si pedís una pista, la respuesta correcta vale la mitad de puntos. ¡Cada partida trae preguntas distintas!
         </div>
 
         <button class="btn-primary" id="btnStart">Empezar juego</button>
@@ -440,7 +440,7 @@
       <div id="screen-game" class="hidden">
         <div class="game-top">
           <span class="level-chip" id="levelChip">Nivel 1</span>
-          <span class="score-tag" id="questionNum">Pregunta 1 de 18</span>
+          <span class="score-tag" id="questionNum">Pregunta 1 de 10</span>
           <span class="score-tag" id="scoreTag">0 pts</span>
         </div>
 
@@ -473,7 +473,7 @@
 
         <div class="final-score">
           <div class="num" id="finalScore">0</div>
-          <div class="of">de 2.850 puntos posibles</div>
+          <div class="of" id="finalOf">de 1.700 puntos posibles</div>
         </div>
         <p class="rank-msg" id="rankMsg"></p>
 
@@ -512,6 +512,8 @@
   var TIMES  = {1:30, 2:40, 3:30, 4:30};
   // Opciones que siempre quedan al final al mezclar
   var FIXED_LAST = ["Todas las anteriores","Ninguna de las anteriores"];
+  // Banco de preguntas: cuántas se sortean por nivel en cada partida
+  var PER_LEVEL = {1:3, 2:2, 3:3, 4:2};
 
   var QUESTIONS = [
     // ===== NIVEL 1 – Diagnóstico y Prevención =====
@@ -519,49 +521,49 @@
       options:["Ministerio de Seguridad","Ministerio de Economía y Producción","Ministerio de Gobierno y Derechos Humanos","Ministerio de Salud"],
       correct:"Ministerio de Seguridad",
       hint:"Su tarea está ligada a la prevención del delito y las violencias.",
-      exp:"La Subsecretaría es un organismo dependiente del Ministerio de Seguridad de la provincia del Neuquén y está a cargo del subsecretario Luis Sánchez."},
+      exp:"La Subsecretaría depende del Ministerio de Seguridad y está a cargo del subsecretario Luis Sánchez."},
     {level:1, q:"¿Cuál es uno de los principales objetivos de la Dirección Provincial de Diagnóstico y Prevención?",
       options:["Investigar delitos y detener personas.","Prevenir situaciones de riesgo y promover comunidades más seguras.","Controlar el tránsito en las rutas.","Aplicar multas y sanciones."],
       correct:"Prevenir situaciones de riesgo y promover comunidades más seguras.",
       hint:"La respuesta está en el nombre de la dirección.",
-      exp:"La Dirección busca anticiparse a situaciones de riesgo con actividades de prevención, capacitación y concientización en las distintas regiones de Neuquén."},
+      exp:"La Dirección se anticipa a situaciones de riesgo con actividades de prevención, capacitación y concientización."},
     {level:1, q:"¿Qué es Pre.Vi.D.A.?",
       options:["Un programa de entrenamiento policial.","Un sistema de emergencias.","Un programa que desarrolla actividades de prevención y concientización en la comunidad.","Una aplicación de seguridad."],
       correct:"Un programa que desarrolla actividades de prevención y concientización en la comunidad.",
       hint:"Las primeras letras del nombre son una buena pista.",
-      exp:"A través de Pre.Vi.D.A. se realizan jornadas, talleres y capacitaciones en escuelas, instituciones y espacios comunitarios."},
+      exp:"Pre.Vi.D.A. lleva jornadas y talleres a escuelas, instituciones y espacios comunitarios."},
     {level:1, q:"¿A quiénes están dirigidas las actividades de prevención?",
       options:["A estudiantes secundarios.","Al personal policial.","A empleados públicos.","A personas de diferentes edades e instituciones de toda la provincia."],
       correct:"A personas de diferentes edades e instituciones de toda la provincia.",
       hint:"Pensá en un público lo más amplio posible.",
-      exp:"Las actividades llegan a estudiantes, docentes, familias, trabajadores e instituciones, con contenidos adaptados a cada público."},
+      exp:"Las actividades llegan a estudiantes, docentes, familias, trabajadores e instituciones de toda la provincia."},
     {level:1, q:"¿Sobre qué temas se trabaja en las jornadas de prevención?",
       options:["Seguridad vial.","Distintas problemáticas, como violencia, bullying, riesgos digitales y convivencia.","Delitos policiales.","Primeros auxilios."],
       correct:"Distintas problemáticas, como violencia, bullying, riesgos digitales y convivencia.",
       hint:"No es un solo tema.",
-      exp:"Las capacitaciones abordan situaciones de la vida cotidiana y brindan herramientas para reconocer riesgos, prevenir conflictos y promover una convivencia más segura."},
+      exp:"Las jornadas brindan herramientas para reconocer riesgos y convivir de forma más segura."},
     {level:1, q:"¿Dónde se realizan las actividades de la Dirección Provincial de Diagnóstico y Prevención?",
       options:["En la ciudad de Neuquén.","En dependencias policiales.","En las distintas regiones de la provincia, en instituciones y espacios comunitarios.","De manera virtual."],
       correct:"En las distintas regiones de la provincia, en instituciones y espacios comunitarios.",
       hint:"La provincia está organizada en regiones.",
-      exp:"Los equipos recorren las distintas regiones de Neuquén y trabajan junto a instituciones y comunidades de toda la provincia."},
+      exp:"Los equipos recorren las distintas regiones de Neuquén junto a instituciones y comunidades."},
 
     // ===== NIVEL 2 – Análisis Delictual =====
     {level:2, q:"¿En qué área del Ministerio de Seguridad funciona el Observatorio de Seguridad Humana para la Prevención del Delito y las Violencias?",
       options:["Dirección Provincial de Asuntos y Políticas Penitenciarias","Dirección Provincial de Análisis Delictual","Programa Agentes de Prevención","Dirección Provincial de Diagnóstico y Prevención"],
       correct:"Dirección Provincial de Análisis Delictual",
       hint:"Un observatorio estudia y analiza datos.",
-      exp:"El Observatorio funciona dentro de la Dirección Provincial de Análisis Delictual (DPAD), que depende de la Subsecretaría de Prevención y Organización Ciudadana."},
+      exp:"El Observatorio funciona dentro de la Dirección Provincial de Análisis Delictual (DPAD)."},
     {level:2, q:"¿Qué línea de trabajo de la DPAD busca conocer cómo perciben la seguridad los vecinos en el territorio?",
       options:["Estadísticas","Mapas de prevalencias delictivas, diagnósticos por regiones e investigaciones especializadas","Encuestas cuantitativas y cualitativas, y delitos no denunciados","Ninguna de las anteriores"],
       correct:"Encuestas cuantitativas y cualitativas, y delitos no denunciados",
       hint:"Para saber qué piensa la gente, hay que preguntarle.",
-      exp:"Las encuestas y el relevamiento de delitos no denunciados permiten evaluar la dimensión subjetiva de la seguridad en el territorio."},
+      exp:"Las encuestas y el relevamiento de delitos no denunciados muestran cómo se vive la seguridad en el territorio."},
     {level:2, q:"¿Qué línea de trabajo de la DPAD sistematiza datos institucionales para identificar patrones territoriales y factores de riesgo?",
       options:["Estadísticas","Encuestas cuantitativas y cualitativas, y delitos no denunciados","Mapas de prevalencias delictivas, diagnósticos por regiones e investigaciones especializadas","Ninguna de las anteriores"],
       correct:"Estadísticas",
       hint:"Es la opción más “numérica”.",
-      exp:"Las estadísticas ordenan los datos de las instituciones para detectar patrones en el territorio y factores de riesgo."},
+      exp:"Las estadísticas ordenan datos de las instituciones para detectar patrones y factores de riesgo."},
     {level:2, q:"¿Qué línea de trabajo de la DPAD crea indicadores de seguridad humana y violencias para asistir a otras áreas del Ministerio de Seguridad?",
       options:["Encuestas cuantitativas y cualitativas, y delitos no denunciados","Mapas de prevalencias delictivas, diagnósticos por regiones e investigaciones especializadas","Estadísticas","Ninguna de las anteriores"],
       correct:"Mapas de prevalencias delictivas, diagnósticos por regiones e investigaciones especializadas",
@@ -571,24 +573,24 @@
       options:["Para administrar las unidades penitenciarias","Para regular las empresas de seguridad privada","Para controlar la seguridad vial en las rutas provinciales","Para diseñar políticas públicas de seguridad humana por regiones"],
       correct:"Para diseñar políticas públicas de seguridad humana por regiones",
       hint:"Pensá en cómo toma decisiones el Estado.",
-      exp:"La Dirección aporta información basada en evidencia para diseñar, ejecutar, monitorear y evaluar las políticas públicas de seguridad de la provincia, con un modelo regionalizado."},
+      exp:"La Dirección aporta evidencia para diseñar y evaluar las políticas de seguridad de cada región."},
 
     // ===== NIVEL 3 – Agentes de Prevención =====
     {level:3, q:"¿Cuál es la diferencia principal entre un Agente de Prevención y un policía provincial?",
       options:["El color de los uniformes","Cumplen las mismas funciones","El Agente de Prevención acompaña, orienta y deriva demandas; no labra multas ni infracciones","Tienen las mismas funciones en distintos lugares"],
       correct:"El Agente de Prevención acompaña, orienta y deriva demandas; no labra multas ni infracciones",
       hint:"Tiene que ver con las multas.",
-      exp:"Los Agentes de Prevención son provinciales, acompañan y orientan a los vecinos y derivan cada demanda al organismo correspondiente. No labran multas ni infracciones."},
+      exp:"Los Agentes de Prevención acompañan, orientan y derivan cada demanda al organismo correspondiente; no labran multas ni infracciones."},
     {level:3, q:"¿En qué lugares podés encontrar habitualmente a los Agentes de Prevención?",
       options:["En eventos de mucha concurrencia","En recorridos por distintos barrios","Cerca de las escuelas","Todas las anteriores"],
       correct:"Todas las anteriores",
       hint:"Los agentes se mueven mucho.",
-      exp:"Los agentes recorren los barrios, están presentes cerca de las escuelas y acompañan eventos con mucha concurrencia."},
+      exp:"Los agentes recorren los barrios, están cerca de las escuelas y acompañan eventos con mucha concurrencia."},
     {level:3, q:"¿Con quién articula un Agente de Prevención ante una situación que supera su rol?",
       options:["Con organismos públicos de seguridad y emergencia","Con organismos de otras provincias","No articula con ningún organismo","Con organismos descentralizados"],
       correct:"Con organismos públicos de seguridad y emergencia",
       hint:"Pensá en quiénes responden ante una urgencia.",
-      exp:"El agente es un puente entre la comunidad y los servicios de seguridad y emergencia: canaliza la demanda hacia el organismo que corresponde."},
+      exp:"El agente canaliza cada demanda hacia el organismo de seguridad o emergencia que corresponde."},
     {level:3, q:"¿De qué color es el chaleco que usan los Agentes de Prevención para que la comunidad pueda identificarlos?",
       options:["Celeste y blanco","Negro","Verde reflectivo","Naranja"],
       correct:"Verde reflectivo",
@@ -598,22 +600,23 @@
       options:["Reemplazar funciones de la policía provincial","Fortalecer la presencia del Estado en los barrios, mejorando la seguridad ciudadana y la convivencia","Controlar el cobro de impuestos municipales en los barrios","Fiscalizar las normas de tránsito y hacer cumplir leyes y ordenanzas"],
       correct:"Fortalecer la presencia del Estado en los barrios, mejorando la seguridad ciudadana y la convivencia",
       hint:"La palabra clave es “presencia”.",
-      exp:"El programa busca que el Estado esté más cerca de los barrios, para mejorar la seguridad ciudadana y la convivencia."},
+      exp:"El programa acerca el Estado a los barrios para mejorar la seguridad ciudadana y la convivencia."},
 
     // ===== NIVEL 4 – Registro Único de Bicicletas =====
     {level:4, q:"¿Para qué sirve el Registro Único de Bicicletas (RUB)?",
       options:["Para cobrar una patente anual a quienes andan en bicicleta","Para multar a ciclistas que circulan sin casco","Para identificar las bicicletas, desalentar la venta de rodados robados y facilitar que las recuperadas vuelvan a su dueño","Para habilitar a las bicicletas a circular por rutas provinciales"],
       correct:"Para identificar las bicicletas, desalentar la venta de rodados robados y facilitar que las recuperadas vuelvan a su dueño",
       hint:"Pensá qué pasa cuando aparece una bici robada.",
-      exp:"El registro vincula cada bicicleta con su propietario. Así se desalienta la venta de rodados robados y, si una bici se recupera, se puede devolver a su dueño."},
+      exp:"El registro vincula cada bicicleta con su dueño, para que pueda devolverse si se recupera."},
     {level:4, q:"¿Cómo es la inscripción en el Registro Único de Bicicletas?",
       options:["Obligatoria y con un costo anual","Voluntaria y gratuita","Obligatoria solo para bicicletas nuevas","Paga, con descuento para estudiantes"],
       correct:"Voluntaria y gratuita",
       hint:"No hay que pagar nada.",
-      exp:"Cualquier vecina o vecino puede registrar su bicicleta sin costo. Tener el rodado inscripto ayuda a identificarlo y a devolverlo a su dueño si se recupera."}
+      exp:"Cualquier vecina o vecino puede registrar su bicicleta sin costo."}
   ];
 
-  var TOTAL_POSSIBLE = QUESTIONS.reduce(function(s,q){return s+POINTS[q.level];},0);
+  var TOTAL_POSSIBLE = [1,2,3,4].reduce(function(s,l){return s+PER_LEVEL[l]*POINTS[l];},0);
+  var TOTAL_QUESTIONS = [1,2,3,4].reduce(function(s,l){return s+PER_LEVEL[l];},0);
   var STORAGE_KEY = "triviaSubsecretariaScores";
 
   var state = {name:"", order:[], idx:0, score:0, breakdown:{1:0,2:0,3:0,4:0},
@@ -643,7 +646,12 @@
   }
 
   function buildOrder(){
-    return QUESTIONS.map(function(q){
+    var picked = [];
+    [1,2,3,4].forEach(function(lvl){
+      var pool = QUESTIONS.filter(function(q){ return q.level === lvl; });
+      picked = picked.concat(shuffle(pool).slice(0, PER_LEVEL[lvl]));
+    });
+    return picked.map(function(q){
       return {level:q.level, points:POINTS[q.level], q:q.q, hint:q.hint, exp:q.exp,
               correct:q.correct, options:shuffleOptions(q.options)};
     });
@@ -806,6 +814,7 @@
   function renderResult(){
     $("resultName").textContent = "¡Bien jugado, " + state.name + "!";
     $("finalScore").textContent = state.score.toLocaleString("es-AR");
+    $("finalOf").textContent = "de " + TOTAL_POSSIBLE.toLocaleString("es-AR") + " puntos posibles";
     $("rankMsg").textContent = rankMessage(state.score);
     var bw = $("breakdownWrap");
     bw.innerHTML = "";
